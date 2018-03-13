@@ -1,0 +1,10 @@
+{
+  "short_name": "Recup dagen",
+  "name": "Berekening recup dagen",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_title": "Recup dagen"
+  },
+  "version": "1.0"
+}
