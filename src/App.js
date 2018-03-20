@@ -45,30 +45,40 @@ class App extends Component {
 
   getWorkedHoursFromMonth(startMonth) {
     var bgPage = chrome.extension.getBackgroundPage();
-    bgPage.getAuthenticatedUser("https://timesheets.cronos.be/", "timesheetapp_user_authenticateduser").then((res) => {
 
+    let userName = '';
 
-      console.log(res);
-
+    bgPage.getCookie("https://timeshseets.cronos.be", "timesheetapp_user_employee").then((res) => {
       if (res === null) {
-        this.setState({ loggedIn: false });
       } else {
-        this.setState({ loggedIn: true });
+        console.log(res.value);
 
-        let year = new Date().getFullYear()
-        if (startMonth > moment().month()) {
-          year -= 1;
-        }
-
-        const from = moment([year, startMonth - 1, 1]).format("YYYYMMDD");
-        const to = moment().date(0).format('YYYYMMDD');
-
-        // console.log('Vanaf: ' + from);
-        // console.log('Tot: ' + to);
-
-        this.fetchHoursWorkedByPeriod(from, to, res.value.split("%22")[3]);
+        // this.fetchHoursWorkedByPeriod(from, to, res.value.split("%22")[3]);
       }
     });
+
+    if (userName !== '') {
+      bgPage.getCookie("https://timesheets.cronos.be/", "timesheetapp_user_authenticateduser").then((res) => {
+        if (res === null) {
+          this.setState({ loggedIn: false });
+        } else {
+          this.setState({ loggedIn: true });
+
+          let year = new Date().getFullYear()
+          if (startMonth > moment().month()) {
+            year -= 1;
+          }
+
+          const from = moment([year, startMonth - 1, 1]).format("YYYYMMDD");
+          const to = moment().date(0).format('YYYYMMDD');
+
+          // console.log('Vanaf: ' + from);
+          // console.log('Tot: ' + to);
+
+          this.fetchHoursWorkedByPeriod(from, to, res.value.split("%22")[3]);
+        }
+      });
+    }
   }
 
   fetchHoursWorkedByPeriod(from, to, token) {
